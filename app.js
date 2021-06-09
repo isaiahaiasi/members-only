@@ -1,9 +1,20 @@
+require("dotenv").config();
+
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
+
+// passportjs
+const session = require("session");
+const passport = require("passport");
+const {
+  getLocalStrategy,
+  handleUserSerialization,
+  handleUserDeserialization,
+} = require("./passportHandler");
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
@@ -24,6 +35,34 @@ const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+// passportjs setup
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+// ! Originally initialized passportjs TWICE. Need to figure that one out...
+app.use(passport.initialize());
+
+app.use(passport.session());
+passport.use(getLocalStrategy());
+passport.serializeUser(handleUserSerialization);
+passport.deserializeUser(handleUserDeserialization);
+
+// ! Originally initialized passportjs TWICE. Need to figure that one out...
+app.use(passport.initialize());
+
+// middleware to add current user to res.locals
+// this allows views to access it by default
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+});
+
+// defaults
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
