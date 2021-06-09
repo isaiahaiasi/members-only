@@ -3,9 +3,20 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const mongoose = require("mongoose");
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
+
+// mongo setup
+const mongoDb = process.env.MONGODB_URL;
+mongoose.connect(mongoDb, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+  useFindAndModify: false,
+});
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "Mongo connection error"));
 
 const app = express();
 
