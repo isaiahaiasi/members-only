@@ -3,14 +3,27 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "startmon": "nodemon ./bin/www",
+    "dev": "DEBUG=members-only:* npm run startmon"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "dotenv": "^10.0.0",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.28.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "nodemon": "^2.0.7",
+    "prettier": "2.3.1"
   }
 }
