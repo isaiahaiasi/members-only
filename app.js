@@ -8,7 +8,7 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 
 // passportjs
-const session = require("session");
+const session = require("express-session");
 const passport = require("passport");
 const {
   getLocalStrategy,
@@ -20,14 +20,14 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 
 // mongo setup
-const mongoDb = process.env.MONGODB_URL;
+const mongoDb = process.env.MONGODB_URI;
 mongoose.connect(mongoDb, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
   useFindAndModify: false,
 });
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "Mongo connection error"));
+db.on("error", console.error.bind(console, "Mongo connection error: "));
 
 const app = express();
 
@@ -44,23 +44,20 @@ app.use(
   })
 );
 
-// ! Originally initialized passportjs TWICE. Need to figure that one out...
-app.use(passport.initialize());
-
-app.use(passport.session());
 passport.use(getLocalStrategy());
 passport.serializeUser(handleUserSerialization);
 passport.deserializeUser(handleUserDeserialization);
 
-// ! Originally initialized passportjs TWICE. Need to figure that one out...
 app.use(passport.initialize());
+app.use(passport.session());
 
 // middleware to add current user to res.locals
 // this allows views to access it by default
-app.use((req, res, next) => {
-  res.locals.currentUser = req.user;
+const addUserToLocals = (req, res, next) => {
+  res.locals.user = req.user;
   next();
-});
+};
+app.use(addUserToLocals);
 
 // defaults
 app.use(logger("dev"));
@@ -73,6 +70,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler
+// TODO: forward to custom 404 page
 app.use(function (req, res, next) {
   next(createError(404));
 });

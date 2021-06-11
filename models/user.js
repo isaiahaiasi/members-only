@@ -6,7 +6,11 @@ const userSchema = new Schema({
   last_name: { type: String },
   username: { type: String },
   password: { type: String },
-  member_role: { type: String, enum: ["user", "club-member", "admin"] },
+  member_role: {
+    type: String,
+    enum: ["user", "club-member", "admin"],
+    default: "user",
+  },
 });
 
 userSchema.virtual("full_name").get(function () {

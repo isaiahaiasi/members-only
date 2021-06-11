@@ -1,10 +1,10 @@
-const LocalStrategy = require("local-strategy");
+const LocalStrategy = require("passport-local");
 const bcrypt = require("bcryptjs");
 
 const User = require("./models/user");
 
 // TODO: rewrite to be less... promise-hell-y
-exports.getLocalStrategy = () =>
+const getLocalStrategy = () =>
   new LocalStrategy((username, pw, done) => {
     User.findOne({ username })
       .exec()
@@ -28,5 +28,11 @@ exports.getLocalStrategy = () =>
       .catch(done);
   });
 
-exports.handleUserSerialization = (user, done) => done(null, user._id); // Originally was just "user.id"
-exports.handleUserDeserialization = (id, done) => User.findById(id, done); // Originally was just "user.id"
+const handleUserSerialization = (user, done) => done(null, user.id);
+const handleUserDeserialization = (id, done) => User.findById(id, done);
+
+module.exports = {
+  getLocalStrategy,
+  handleUserSerialization,
+  handleUserDeserialization,
+};
