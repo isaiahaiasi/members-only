@@ -8,6 +8,9 @@
 </head>
 <body>
   <h1><%= title %></h1>
+  <% if (user) { %>
+    <p>But... you're already signed up!</p>
+  <% } else { %>
   <form method="POST" action="">
     <div>
       <label for="username">Username:</label>
@@ -25,5 +28,15 @@
       <button type="submit"> Log in </button>
     </div>
   </form>
+  <% } %>
+  <% if (locals.errors) { %>
+    <ul>
+      <% for ([param, {msg}] of errors.entries()) { %>
+        <li>
+          <b><%= param %>:</b> <%= msg %>
+        </li>
+      <% } %>
+    </ul>
+  <% } %>
 </body>
 </html>
