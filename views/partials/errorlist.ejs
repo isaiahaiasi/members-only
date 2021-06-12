@@ -1,0 +1,7 @@
+<ul>
+  <% for ([param, {msg}] of errors.entries()) { %>
+    <li>
+      <b><%= param %>:</b> <%= msg %>
+    </li>
+  <% } %>
+</ul>

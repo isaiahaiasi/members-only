@@ -1,22 +1,13 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-  </head>
+  <%- include('partials/head', {title}) %>
   <body>
+    <%- include('partials/nav', {user}) %>
     <% if (user) { %>
       <h1>Welcome, <%= user.username %></h1>
     <% } else { %>
       <h1><%= title %></h1>
       <p>Welcome to <%= title %></p>
-      <a href="/login">
-        <button> Log in </button>
-      </a>
-      <br>
-      <a href="/signup">
-        <button> Sign up? </button>
-      </a>
     <% } %>
   </body>
 </html>

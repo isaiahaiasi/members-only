@@ -17,7 +17,6 @@ const {
 } = require("./passportHandler");
 
 const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
 
 // mongo setup
 const mongoDb = process.env.MONGODB_URI;
@@ -67,7 +66,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler
 // TODO: forward to custom 404 page

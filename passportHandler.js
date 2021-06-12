@@ -11,7 +11,10 @@ const getLocalStrategy = () =>
       .then((user) => {
         if (!user) {
           console.log("Incorrect username");
-          return done(null, false, { message: "Incorrect username" });
+          return done(null, false, {
+            param: "username",
+            msg: "Incorrect username",
+          });
         }
 
         bcrypt
@@ -19,7 +22,10 @@ const getLocalStrategy = () =>
           .then((res) => {
             if (!res) {
               console.log("Incorrect password");
-              return done(null, false, { message: "Incorrect password" });
+              return done(null, false, {
+                param: "password",
+                msg: "Incorrect password",
+              });
             }
             return done(null, user);
           })

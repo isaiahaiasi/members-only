@@ -1,11 +1,13 @@
 const bcrypt = require("bcryptjs");
 const { body, validationResult } = require("express-validator");
+const passport = require("passport");
+
 const User = require("../models/user");
 
 // * VALIDATE & SANITIZE
 // ? blacklist characters instead of escaping?
 const usernameValidator = body("username").trim().not().isEmpty();
-const passwordValidator = body(["password", "password-confirm"])
+const passwordValidator = body("password")
   .isLength({ min: 8 })
   .withMessage("Password must be at least 8 characters long");
 
@@ -70,7 +72,7 @@ const handleValidationErrors = (view, locals) => {
   };
 };
 
-// * TERMINAL ROUTE HANDLER
+// * TERMINAL ROUTE HANDLER FOR <POST> /SIGNUP
 // assuming all validation has passed, register user
 const registerUser = async (req, res, next) => {
   const { username, password } = req.body;
@@ -93,7 +95,7 @@ const signupValidators = [
   usernameIsUniqueValidator,
 ];
 
-// * ORCHESTRATED ROUTE HANDLER
+// * ORCHESTRATED ROUTE HANDLER FOR <POST> /SIGNUP
 // the final array of handlers passed to the route
 // consists of: validators, error handlers, and terminal handler (ie, success renderer)
 const signupPost = [
@@ -102,4 +104,35 @@ const signupPost = [
   registerUser,
 ];
 
-module.exports = { signupPost };
+// ! Cannot figure out a graceful way to mix validator & authenticate()...
+// * TERMINAL ROUTE HANDLER FOR <POST> /LOGIN
+const loginUser = (req, res, next) => {
+  passport.authenticate("local", function (err, user, info) {
+    console.log(info);
+    if (err) {
+      return next(err);
+    }
+
+    if (!user) {
+      return res.render("login", { errors: [info], title: "uhghh" });
+    }
+
+    req.logIn(user, function (err) {
+      if (err) {
+        return next(err);
+      }
+
+      return res.redirect("/");
+    });
+  })(req, res, next);
+};
+
+const loginValidators = [usernameValidator, passwordValidator];
+
+const loginPost = [
+  ...loginValidators,
+  handleValidationErrors("login", { title: "Couldn't log in!" }),
+  loginUser,
+];
+
+module.exports = { signupPost, loginPost };

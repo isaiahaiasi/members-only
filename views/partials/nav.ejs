@@ -1,0 +1,17 @@
+<ul>
+  <li><a href="/">Home</a></li>
+  <% if (locals.user) { %>
+    <% if (user.member_role === 'user' || user.member_role === 'club-member') { %>
+        <li><a href="/upgrade">Upgrade membership</a></li>
+    <% } %>
+    <li><a href="/msg">Create message</a></li>
+    <li>
+      <form method="POST" action="/logout">
+        <button type="submit">Log out</button>
+      </form>
+    </li>
+    <% } else { %>
+      <li><a href="/login">Log in</a></li>
+      <li><a href="/signup">Sign up</a></li>
+  <% } %>
+</ul>

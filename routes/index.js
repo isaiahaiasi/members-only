@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
 const signupController = require("../controllers/signupController");
 
 /* GET home page. */
@@ -12,13 +11,7 @@ router.get("/login", (req, res, next) => {
   res.render("login", { title: "Log in form" });
 });
 
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-  })
-);
+router.post("/login", signupController.loginPost);
 
 router.get("/signup", (req, res, next) => {
   res.render("signup", { title: "Sign up form" });
