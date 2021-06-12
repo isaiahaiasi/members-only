@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const signupController = require("../controllers/signupController");
+const authController = require("../controllers/authController");
+const msgController = require("../controllers/msgController");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -11,14 +12,16 @@ router.get("/login", (req, res, next) => {
   res.render("login", { title: "Log in form" });
 });
 
-router.post("/login", signupController.loginPost);
+router.post("/login", authController.loginPost);
 
 router.get("/signup", (req, res, next) => {
   res.render("signup", { title: "Sign up form" });
 });
 
-router.post("/signup", signupController.signupPost);
+router.post("/signup", authController.signupPost);
 
-router.post("/logout", signupController.logoutPost);
+router.post("/logout", authController.logoutPost);
+
+router.get("/msg", msgController.msgGet);
 
 module.exports = router;

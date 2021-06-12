@@ -139,6 +139,8 @@ const loginPost = [
   loginUser,
 ];
 
+// * HANDLER FOR <POST> /LOGOUT
+
 const logoutPost = (req, res) => {
   req.logout();
   res.redirect("/");
