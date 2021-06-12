@@ -1,0 +1,22 @@
+<%- include("partials/head", {title}) %> 
+
+<%- include("partials/nav") %>
+<h1>Post a comment!</h1>
+
+<form method="POST" action="">
+  <div>
+    <label for="title">Title: </label>
+    <input type="text" placeholder="message title" id="title" name="title">
+  </div>
+  <div>
+    <label for="content">Message: </label>
+    <input type="text" placeholder="message content" id="content" name="content">
+  </div>
+  <button type="submit">Post comment</button>
+</form>
+
+<% if (locals.msgs) { %>
+  <%- include("partials/msglist", {msgs}) %>
+<% } else { %>
+  <p> No messages! </p>
+<% } %>

@@ -4,8 +4,9 @@ const authController = require("../controllers/authController");
 const msgController = require("../controllers/msgController");
 
 /* GET home page. */
-router.get("/", function (req, res, next) {
-  res.render("index", { title: "Express" });
+router.get("/", async function (req, res, next) {
+  const msgs = await msgController.getMsgs().catch(next);
+  res.render("index", { title: "Express", msgs });
 });
 
 router.get("/login", (req, res, next) => {
@@ -23,5 +24,6 @@ router.post("/signup", authController.signupPost);
 router.post("/logout", authController.logoutPost);
 
 router.get("/msg", msgController.msgGet);
+router.post("/msg", msgController.msgPost);
 
 module.exports = router;

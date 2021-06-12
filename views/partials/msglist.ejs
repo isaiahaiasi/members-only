@@ -1,0 +1,9 @@
+<% if (locals.msgs) { %>
+  <ul>
+    <% msgs.forEach(msg => { %>
+      <li>
+        <%- include('msgcard', {msg}) %>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
