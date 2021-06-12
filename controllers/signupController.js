@@ -77,6 +77,7 @@ const handleValidationErrors = (view, locals) => {
 const registerUser = async (req, res, next) => {
   const { username, password } = req.body;
   try {
+    // ! TODO? : Get a random salt each time, store in user record??
     const passwordHash = await bcrypt.hash(password, 10);
 
     const user = new User({ username, password: passwordHash });
@@ -104,17 +105,20 @@ const signupPost = [
   registerUser,
 ];
 
-// ! Cannot figure out a graceful way to mix validator & authenticate()...
+// ! Cannot figure out how to pass validation error to redirect (url params I guess?)
 // * TERMINAL ROUTE HANDLER FOR <POST> /LOGIN
 const loginUser = (req, res, next) => {
+  // ? should this be extracted?
   passport.authenticate("local", function (err, user, info) {
-    console.log(info);
     if (err) {
       return next(err);
     }
 
     if (!user) {
-      return res.render("login", { errors: [info], title: "uhghh" });
+      res.locals.errors = [info];
+      res.locals.title = "uhghh";
+      console.log(res.locals);
+      return res.redirect("/login");
     }
 
     req.logIn(user, function (err) {
@@ -135,4 +139,9 @@ const loginPost = [
   loginUser,
 ];
 
-module.exports = { signupPost, loginPost };
+const logoutPost = (req, res) => {
+  req.logout();
+  res.redirect("/");
+};
+
+module.exports = { signupPost, loginPost, logoutPost };
