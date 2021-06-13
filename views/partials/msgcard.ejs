@@ -1,9 +1,6 @@
-<% console.log("msg:") %>
-<% console.log(msg) %>
-<% console.log("title:") %>
-<% console.log(msg.title) %>
 <div>
   <h3> <%= msg.title %> </h3>
   <p> <%= msg.user.username %> </p>
   <p> <%= msg.content %> </p>
+  <p> <%= msg.created_at_formatted %> </p>
 </div>

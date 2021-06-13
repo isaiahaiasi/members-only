@@ -5,7 +5,7 @@ const msgController = require("../controllers/msgController");
 
 /* GET home page. */
 router.get("/", async function (req, res, next) {
-  const msgs = await msgController.getMsgs().catch(next);
+  const msgs = await msgController.getMsgs(req.user).catch(next);
   res.render("index", { title: "Express", msgs });
 });
 
