@@ -31,6 +31,8 @@ router.post("/signup", authController.signupPost);
 router.get("/msg", msgController.msgGet);
 router.post("/msg", msgController.msgPost);
 
+router.post("/msg/:msgid/delete", msgController.msgDelete);
+
 // UPGRADE
 router.get("/upgrade", upgradeController.upgradeGet);
 router.post("/upgrade", upgradeController.upgradePost);

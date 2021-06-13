@@ -34,9 +34,13 @@ const handleUserDeserialization = (id, done) => User.findById(id, done);
 const authorizeUser = (req, res, next) =>
   req.user ? next() : res.redirect("/login");
 
+const authorizeAdmin = (req, res, next) =>
+  req.user?.member_role === "admin" ? next() : res.redirect("/login");
+
 module.exports = {
   getLocalStrategy,
   handleUserSerialization,
   handleUserDeserialization,
   authorizeUser,
+  authorizeAdmin,
 };

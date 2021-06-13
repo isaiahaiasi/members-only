@@ -1,9 +1,10 @@
 const { body } = require("express-validator");
 
 const { handleValidationErrors } = require("../validationHelpers");
-const { authorizeUser } = require("../passportHelpers");
+const { authorizeUser, authorizeAdmin } = require("../passportHelpers");
 
 const Msg = require("../models/msg");
+const mongoose = require("mongoose");
 
 const titleValidator = body("title").not().isEmpty();
 const contentValidator = body("content").isLength({ min: 5 });
@@ -55,4 +56,19 @@ const msgPost = [
   addMsg,
 ];
 
-module.exports = { msgGet, msgPost, getMsgs };
+// * HANDLER FOR /MSG/:MSGID/DELETE
+const deleteMsg = async (req, res, next) => {
+  const id = mongoose.Types.ObjectId(req.params.msgid);
+  const deletedMsg = Msg.findByIdAndDelete(id).catch(next);
+
+  if (!deletedMsg) {
+    next(new Error(`could not find msg with id ${req.params.msgid}`));
+  }
+
+  console.log("delete successful");
+  res.redirect("index");
+};
+
+const msgDelete = [authorizeAdmin, deleteMsg];
+
+module.exports = { msgGet, msgPost, msgDelete, getMsgs };

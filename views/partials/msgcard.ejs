@@ -3,4 +3,9 @@
   <p> <%= msg.user.username %> </p>
   <p> <%= msg.content %> </p>
   <p> <%= msg.created_at_formatted %> </p>
+  <% if (user && user.member_role === 'admin') { %>
+    <form method="POST" action="/msg/<%= msg._id %>/delete">
+      <button type="submit">Delete</button>
+    </form>
+  <% } %>
 </div>
