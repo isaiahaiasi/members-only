@@ -6,8 +6,12 @@ const upgradeController = require("../controllers/upgradeController");
 
 // INDEX
 router.get("/", async function (req, res, next) {
-  const msgs = await msgController.getMsgs(req.user).catch(next);
-  res.render("index", { title: "Express", msgs });
+  try {
+    const msgs = await msgController.getMsgs(req.user);
+    res.render("index", { title: "Express", msgs });
+  } catch (error) {
+    next(error);
+  }
 });
 
 // LOGOUT
