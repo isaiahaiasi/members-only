@@ -1,7 +1,12 @@
-const Msg = require("../models/msg");
-const { authorizeUser } = require("../passportHandler");
+const { body } = require("express-validator");
 
-// TODO: validate message inputs
+const { handleValidationErrors } = require("../validationHelpers");
+const { authorizeUser } = require("../passportHelpers");
+
+const Msg = require("../models/msg");
+
+const titleValidator = body("title").not().isEmpty();
+const contentValidator = body("content").isLength({ min: 5 });
 
 // ! not sure where this should actually go...
 const getMsgs = async (user) => {
@@ -43,8 +48,10 @@ const addMsg = async (req, res, next) => {
 };
 
 const msgPost = [
-  // TODO: validation
   authorizeUser,
+  titleValidator,
+  contentValidator,
+  handleValidationErrors("msg", { title: "Something went wrong" }),
   addMsg,
 ];
 

@@ -14,7 +14,7 @@ const {
   getLocalStrategy,
   handleUserSerialization,
   handleUserDeserialization,
-} = require("./passportHandler");
+} = require("./passportHelpers");
 
 const indexRouter = require("./routes/index");
 

@@ -2,8 +2,9 @@
 <%- include("partials/nav") %>
 <h1>Upgrade your membership?</h1>
 
-<p>Right now, your status is "<%= user.member_role %>" </p>
-<form method="POST" action="">
+<% if (user) { %>
+  <p>Right now, your status is "<%= user.member_role %>" </p>
+  <form method="POST" action="">
   <div>
     <label for="role">What would you like to upgrade your membership to?</label>
     <select id="role" name="role">
@@ -19,4 +20,10 @@
     <input type="text" name="secret" id="secret">
   </div>
   <button type="submit">Submit</button>
-</form>
+  </form>
+  <% if (locals.errors) { %>
+    <%- include('partials/errorlist') %> 
+  <% } %>
+<% } else { %>
+  <p>Hey... you're not supposed to be here! </p>
+<% } %>

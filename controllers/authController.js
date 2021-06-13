@@ -1,8 +1,10 @@
 const bcrypt = require("bcryptjs");
-const { body, validationResult } = require("express-validator");
+const { body } = require("express-validator");
 const passport = require("passport");
 
 const User = require("../models/user");
+
+const { handleValidationErrors } = require("../validationHelpers");
 
 // * VALIDATE & SANITIZE
 // ? blacklist characters instead of escaping?
@@ -36,42 +38,6 @@ const usernameIsUniqueValidator = body("username").custom(async (value) => {
   }
 });
 
-// * GENERIC VALIDATION HANDLER
-// function that creates a middleware function for rendering the form rejection.
-// takes the typical res.render arguments, then calls res.render with those + errors
-// or calls next() if validation passes
-const handleValidationErrors = (view, locals) => {
-  return (req, res, next) => {
-    const errorsArray = validationResult(req).array();
-
-    // create a Map where [err.param]: [err]
-    // ? Can't find built-in for making Map from Array? :hmm:
-    // the downside of this approach is I'm creating a more burdensome dependency
-    // for my Views, since Maps aren't really the assumed interface
-    const errors = errorsArray.reduce(
-      (acc, err) => acc.set(err.param, { msg: err.msg }),
-      new Map()
-    );
-
-    if (errors.size > 0) {
-      // create a copy of req.body with everything but entries containing "password"
-      const filteredBody = Object.fromEntries(
-        Object.entries(req.body).filter(([key]) => !key.includes("password"))
-      );
-
-      const allLocals = {
-        ...locals,
-        ...filteredBody,
-        errors,
-      };
-
-      res.status(400).render(view, allLocals);
-    } else {
-      next();
-    }
-  };
-};
-
 // * TERMINAL ROUTE HANDLER FOR <POST> /SIGNUP
 // assuming all validation has passed, register user
 const registerUser = async (req, res, next) => {
@@ -80,6 +46,7 @@ const registerUser = async (req, res, next) => {
     // ! TODO? : Get a random salt each time, store in user record??
     const passwordHash = await bcrypt.hash(password, 10);
 
+    // ! TODO? : Should hash (& salt) be stored in a record I'm NOT constantly pulling up??
     const user = new User({ username, password: passwordHash });
     await user.save();
 

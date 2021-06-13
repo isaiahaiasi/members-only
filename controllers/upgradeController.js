@@ -1,7 +1,14 @@
-const { authorizeUser } = require("../passportHandler");
+const { body } = require("express-validator");
+
+const { handleValidationErrors } = require("../validationHelpers");
+const { authorizeUser } = require("../passportHelpers");
 const User = require("../models/user");
 
-// TODO: validation functions
+// * VALIDATORS
+const secretValidator = body("secret").not().isEmpty();
+const roleValidator = body("role").custom((value) => {
+  return value === "club-member" || value === "admin";
+});
 
 // * HANDLER FOR /UPGRADE <GET>
 const upgradeRender = async (req, res, next) => {
@@ -22,22 +29,24 @@ const upgradeUser = async (req, res, next) => {
   if (role === "club-member" && secret === process.env.CM_SECRET) {
     // upgrade user to 'club-member'
     await User.findByIdAndUpdate(req.user._id, { member_role: "club-member" });
+    res.redirect("/");
   } else if (role === "admin" && secret === process.env.ADMIN_SECRET) {
     // upgrade user to 'admin'
     await User.findByIdAndUpdate(req.user._id, { member_role: "admin" });
+    res.redirect("/");
   } else {
     res.render("upgrade", {
       title: "Invalid secret",
       errors: [{ param: "secret", msg: "Invalid secret" }],
     });
   }
-
-  res.redirect("/");
 };
 
 const upgradePost = [
-  // TODO: validation
   authorizeUser,
+  secretValidator,
+  roleValidator,
+  handleValidationErrors("upgrade", { title: "Something went wrong..." }),
   upgradeUser,
 ];
 
