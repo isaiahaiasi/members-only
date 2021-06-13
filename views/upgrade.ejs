@@ -1,0 +1,22 @@
+<%- include("partials/head", {title})%> 
+<%- include("partials/nav") %>
+<h1>Upgrade your membership?</h1>
+
+<p>Right now, your status is "<%= user.member_role %>" </p>
+<form method="POST" action="">
+  <div>
+    <label for="role">What would you like to upgrade your membership to?</label>
+    <select id="role" name="role">
+      <option value="" selected disabled>Choose your option</option>
+      <% if (user.member_role === 'user') { %>
+        <option value="club-member">Club member</option>
+      <% } %>
+      <option value="admin">Admin</option>
+    </select>
+  </div>
+  <div>
+    <label for="secret">What's the secret word?</label>
+    <input type="text" name="secret" id="secret">
+  </div>
+  <button type="submit">Submit</button>
+</form>

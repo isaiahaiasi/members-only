@@ -1,14 +1,14 @@
 const Msg = require("../models/msg");
 const { authorizeUser } = require("../passportHandler");
 
+// TODO: validate message inputs
+
 // ! not sure where this should actually go...
 const getMsgs = async (user) => {
   const msgs = Msg.find({})
     .sort({ created_at: -1 })
     .limit(100)
     .populate("user");
-
-  console.log(user);
 
   if (user && user.member_role !== "user") {
     return msgs.exec();
@@ -27,8 +27,9 @@ const getMsgs = async (user) => {
 };
 
 // * HANDLER FOR /MSG <GET>
-const msgRender = (req, res, next) => {
-  res.render("msg", { title: "post your comment" });
+const msgRender = async (req, res) => {
+  const msgs = await getMsgs(req.user);
+  res.render("msg", { title: "post your comment", msgs });
 };
 
 const msgGet = [authorizeUser, msgRender];
@@ -41,6 +42,10 @@ const addMsg = async (req, res, next) => {
   res.redirect("/");
 };
 
-const msgPost = [authorizeUser, addMsg];
+const msgPost = [
+  // TODO: validation
+  authorizeUser,
+  addMsg,
+];
 
 module.exports = { msgGet, msgPost, getMsgs };
